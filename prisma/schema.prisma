@@ -1,0 +1,247 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  TREASURER
+  SECRETARY
+  VIEWER
+}
+
+enum PaymentStatus {
+  PENDING
+  PARTIAL
+  PAID
+  WAIVED
+}
+
+model User {
+  id                    String         @id @default(cuid())
+  name                  String
+  email                 String         @unique
+  passwordHash          String
+  role                  UserRole       @default(VIEWER)
+  isActive              Boolean        @default(true)
+  verifiedSubscriptions Subscription[] @relation("SubscriptionVerifiedBy")
+  approvedSubscriptions Subscription[] @relation("SubscriptionApprovedBy")
+  createdAt             DateTime       @default(now())
+}
+
+model Church {
+  id              String         @id @default("singleton")
+  churchCode      String?        @unique
+  name            String         @default("ST Andrew Church")
+  logoPath        String?
+  addressLine1    String?
+  addressLine2    String?
+  city            String?
+  district        String?
+  state           String?
+  postalCode      String?
+  phone           String?
+  email           String?
+  websiteUrl      String?
+  websiteLinkText String?
+  description     String?
+  status          String         @default("ACTIVE")
+  seniorPastorId  String?
+  seniorPastor    Member?        @relation("ChurchSeniorPastor", fields: [seniorPastorId], references: [id], onDelete: SetNull)
+  families        Family[]
+  members         Member[]
+  fellowships     Fellowship[]
+  ministries      Ministry[]
+  subscriptions   Subscription[]
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
+
+model Family {
+  id           String   @id @default(cuid())
+  familyCode   String?  @unique
+  churchId     String   @default("singleton")
+  church       Church   @relation(fields: [churchId], references: [id], onDelete: Restrict)
+  name         String
+  address      String?
+  addressLine1 String?
+  addressLine2 String?
+  city         String?
+  district     String?
+  state        String?
+  postalCode   String?
+  phone        String?
+  email        String?
+  familyHeadId String?
+  familyHead   Member?  @relation("FamilyHead", fields: [familyHeadId], references: [id], onDelete: SetNull)
+  status       String   @default("ACTIVE")
+  notes        String?
+  members      Member[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Member {
+  id                   String             @id @default(cuid())
+  memberCode           String?            @unique
+  churchId             String             @default("singleton")
+  church               Church             @relation(fields: [churchId], references: [id], onDelete: Restrict)
+  memberNumber         String?            @unique
+  firstName            String
+  lastName             String
+  salutation           String?
+  gender               String?
+  maritalStatus        String?
+  profilePhotoPath     String?
+  addressLine1         String?
+  area                 String?
+  landmark             String?
+  addressLine2         String?
+  city                 String?
+  district             String?
+  state                String?
+  postalCode           String?
+  email                String?
+  phone                String?
+  emergencyContact     String?
+  dateOfBirth          DateTime?
+  weddingAnniversary   DateTime?
+  joinedAt             DateTime           @default(now())
+  isActive             Boolean            @default(true)
+  membershipStatus     String             @default("ACTIVE")
+  subscriptionEligible Boolean            @default(false)
+  membershipExpiresAt  DateTime?
+  baptismStatus        String?
+  notes                String?
+  familyId             String?
+  family               Family?            @relation(fields: [familyId], references: [id], onDelete: SetNull)
+  headedFamilies       Family[]           @relation("FamilyHead")
+  ledChurches          Church[]           @relation("ChurchSeniorPastor")
+  ledMinistries        Ministry[]         @relation("MinistryLeader")
+  ledFellowships       Fellowship[]       @relation("FellowshipLeader")
+  assistedFellowships  Fellowship[]       @relation("FellowshipAssistantLeader")
+  ministryId           String?
+  ministry             Ministry?          @relation("MinistryMembers", fields: [ministryId], references: [id], onDelete: SetNull)
+  primaryFellowshipId  String?
+  primaryFellowship    Fellowship?        @relation("PrimaryFellowship", fields: [primaryFellowshipId], references: [id], onDelete: SetNull)
+  subscriptions        Subscription[]
+  fellowships          FellowshipMember[]
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  @@index([lastName, firstName])
+  @@index([dateOfBirth])
+  @@index([weddingAnniversary])
+}
+
+model MemberNumberCounter {
+  id    String @id
+  value Int
+}
+
+model Fellowship {
+  id                String             @id @default(cuid())
+  fellowshipCode    String?            @unique
+  churchId          String             @default("singleton")
+  church            Church             @relation(fields: [churchId], references: [id], onDelete: Restrict)
+  name              String             @unique
+  description       String?
+  notes             String?
+  meetingDay        String?
+  meetingTime       String?
+  leaderId          String?
+  leader            Member?            @relation("FellowshipLeader", fields: [leaderId], references: [id], onDelete: SetNull)
+  assistantLeaderId String?
+  assistantLeader   Member?            @relation("FellowshipAssistantLeader", fields: [assistantLeaderId], references: [id], onDelete: SetNull)
+  status            String             @default("ACTIVE")
+  members           FellowshipMember[]
+  primaryMembers    Member[]           @relation("PrimaryFellowship")
+  createdAt         DateTime           @default(now())
+}
+
+model Ministry {
+  id           String   @id @default(cuid())
+  ministryCode String?  @unique
+  churchId     String   @default("singleton")
+  church       Church   @relation(fields: [churchId], references: [id], onDelete: Restrict)
+  name         String
+  leaderId     String?
+  leader       Member?  @relation("MinistryLeader", fields: [leaderId], references: [id], onDelete: SetNull)
+  members      Member[] @relation("MinistryMembers")
+  description  String?
+  status       String   @default("ACTIVE")
+  notes        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model FellowshipMember {
+  id           String     @id @default(cuid())
+  memberId     String
+  fellowshipId String
+  member       Member     @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  fellowship   Fellowship @relation(fields: [fellowshipId], references: [id], onDelete: Cascade)
+  joinedAt     DateTime   @default(now())
+
+  @@unique([memberId, fellowshipId])
+}
+
+model Subscription {
+  id                  String        @id @default(cuid())
+  subscriptionCode    String?
+  name                String        @default("Subscription")
+  churchId            String        @default("singleton")
+  church              Church        @relation(fields: [churchId], references: [id], onDelete: Restrict)
+  memberId            String
+  member              Member        @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  financialYear       String
+  period              String
+  monthlySubscription Int           @default(0)
+  buildingFund        Int           @default(0)
+  cemeteryFund        Int           @default(0)
+  gospelFund          Int           @default(0)
+  poorWelfareFund     Int           @default(0)
+  menFellowshipFund   Int           @default(0)
+  womenFellowshipFund Int           @default(0)
+  youthFellowshipFund Int           @default(0)
+  womenMinistryFund   Int           @default(0)
+  healthFacilityFund  Int           @default(0)
+  amountDue           Int
+  amountPaid          Int           @default(0)
+  paidAt              DateTime?
+  requestDate         DateTime      @default(now())
+  isVerified          Boolean       @default(false)
+  verifiedById        String?
+  verifiedBy          User?         @relation("SubscriptionVerifiedBy", fields: [verifiedById], references: [id], onDelete: SetNull)
+  isApproved          Boolean       @default(false)
+  approvedById        String?
+  approvedBy          User?         @relation("SubscriptionApprovedBy", fields: [approvedById], references: [id], onDelete: SetNull)
+  receiptNo           String?
+  notes               String?
+  status              PaymentStatus @default(PENDING)
+  paymentEntry        AccountEntry?
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  @@unique([memberId, financialYear, period])
+  @@index([financialYear, period])
+}
+
+model AccountEntry {
+  id                   String        @id @default(cuid())
+  entryDate            DateTime      @default(now())
+  kind                 String
+  category             String
+  description          String
+  amount               Int
+  reference            String?
+  sourceSubscriptionId String?       @unique
+  sourceSubscription   Subscription? @relation(fields: [sourceSubscriptionId], references: [id], onDelete: Cascade)
+  createdAt            DateTime      @default(now())
+
+  @@index([entryDate])
+}

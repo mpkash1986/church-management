@@ -1,0 +1,2 @@
+import {NextResponse} from "next/server";import {requireUser} from "@/lib/auth";import {getUpcomingReminders} from "@/lib/reminders";
+export async function GET(){try{await requireUser()}catch{return NextResponse.json({error:"Unauthorized"}, {status:401})}return NextResponse.json(await getUpcomingReminders(7))}

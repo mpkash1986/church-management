@@ -1,0 +1,117 @@
+.create-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+}
+
+.create-card {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding: 22px;
+  min-height: 150px;
+  background: #fff;
+  border: 1px solid #e6eaf1;
+  border-radius: 14px;
+  box-shadow: 0 4px 16px #15213a08;
+}
+
+.create-card:hover {
+  border-color: #3158c9;
+  box-shadow: 0 8px 22px #15213a12;
+}
+
+.create-card-title {
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.create-card-action {
+  align-self: end;
+  color: #3158c9;
+  font-weight: 700;
+}
+
+.form-grid-full {
+  grid-column: 1 / -1;
+}
+
+.fund-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 14px;
+  width: 100%;
+}
+
+.subscription-total {
+  width: min(100%, 300px);
+  margin-top: 14px;
+}
+
+.subscription-total output,
+.computed-value {
+  display: block;
+  min-height: 42px;
+  padding: 11px;
+  border: 1px solid #d9dfeb;
+  border-radius: 8px;
+  background: #f5f7fb;
+  font-weight: 700;
+}
+
+.check-field label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 42px;
+}
+
+.check-field input {
+  width: 18px;
+  height: 18px;
+}
+
+.field-error {
+  color: #b42318;
+  font-size: 13px;
+}
+
+.image-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.image-preview img,
+.church-logo {
+  max-width: 120px;
+  max-height: 100px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.table-avatar {
+  width: 36px;
+  height: 36px;
+  margin-right: 8px;
+  vertical-align: middle;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.church-profile {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: start;
+  gap: 20px;
+}
+
+.church-profile h2 {
+  margin-top: 0;
+}
+
+@media (max-width: 760px) {
+  .church-profile {
+    grid-template-columns: 1fr;
+  }
+}
