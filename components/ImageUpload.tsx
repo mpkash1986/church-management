@@ -33,7 +33,7 @@ export default function ImageUpload({ name, label, defaultValue }: { name: strin
 
   return <div className="field">
     <label htmlFor={`${name}-upload`}>{label}</label>
-    <input id={`${name}-upload`} type="file" accept="image/jpeg,image/png,image/webp" onChange={upload} disabled={busy} />
+    <input id={`${name}-upload`} type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" onChange={upload} disabled={busy} />
     <input type="hidden" name={name} value={path} />
     {busy && <span className="muted" role="status">Uploading image…</span>}
     {error && <span className="field-error" role="alert">{error}</span>}

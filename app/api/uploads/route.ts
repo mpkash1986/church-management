@@ -32,9 +32,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Image must be smaller than 5 MB." }, { status: 400 });
   }
 
-  const type = imageTypes[file.type as keyof typeof imageTypes];
   const bytes = new Uint8Array(await file.arrayBuffer());
-  if (!type || !type.matches(bytes)) {
+  const type = Object.values(imageTypes).find((candidate) => candidate.matches(bytes));
+  if (!type) {
     return NextResponse.json({ error: "Use a valid JPEG, PNG, or WebP image." }, { status: 400 });
   }
 
