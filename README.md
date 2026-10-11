@@ -1,6 +1,6 @@
 # Church Management — Next.js + npm
 
-A starter application for church administration using **Next.js App Router, TypeScript, npm, Prisma and SQLite**.
+Church management application built with **Next.js, TypeScript, Prisma and SQLite**.
 
 ## Included
 - Login with hashed passwords and an HTTP-only signed session cookie
