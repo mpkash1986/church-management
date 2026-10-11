@@ -13,13 +13,14 @@ Church management application built with **Next.js, TypeScript, Prisma and SQLit
 - Financial-year and monthly subscriptions with automatic read-only names (Member Name - Financial Year - Month), ten fund categories, per-member assessment, verification and approval, payment status, receipt number and outstanding balance
 - Subscription payments default to the assessed total; receipt numbers are generated from payment date/time, payment date is fixed at creation, and request date remains editable
 - Subscription financial-year selection defaults to the current April–March year and only offers current or previous years
+- Dates are displayed and entered as DD/MM/YYYY; APIs and storage continue to use ISO dates
 - Dashboard fund-head totals for the current financial year and a filterable member-level fund report with family, financial-year, and month filters
-- Cashbook for income and expenses; subscription payment entries are automatically added as income
+- Cashbook for income and expenses with automatically generated date/time-based references; subscription payment entries are automatically added as income
 - Create, view, edit, and delete for members, families, fellowships, subscriptions, and cashbook entries
 - Create menu for Church, Family, Fellowship, Member, Ministry and Subscription forms; the church profile is a single app-wide record
 - Subscription batch creation applies the selected fund breakdown and payment amount separately to each selected member
 - Member/fellowship assignment, administrator-managed user accounts, and linked subscription payments in the cashbook
-- Birthday and wedding anniversary list for the next 7 days, including on the dashboard
+- Birthday and wedding anniversary list for the upcoming Sunday-to-Saturday week, including on the dashboard
 - JSON endpoint for reminders: `GET /api/reminders`
 
 ## Requirements

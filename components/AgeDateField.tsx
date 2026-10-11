@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import DateInput from "@/components/DateInput";
 import { calculateAge } from "@/lib/age";
 
 type Props = {
@@ -16,7 +17,7 @@ export default function AgeDateField({ id, name, value = "", asOf }: Props) {
 
   return <div className="field">
     <label htmlFor={id}>Date of birth</label>
-    <input id={id} name={name} type="date" value={dateOfBirth} onChange={(event) => setDateOfBirth(event.target.value)} />
+    <DateInput id={id} name={name} value={dateOfBirth} onChange={setDateOfBirth} />
     {age !== null && <output className="muted" aria-live="polite">Age: {age}</output>}
   </div>;
 }

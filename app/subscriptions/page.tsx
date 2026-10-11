@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import FormFeedback from "@/components/FormFeedback";
+import DateInput from "@/components/DateInput";
 import RecordActions from "@/components/RecordActions";
 import Shell from "@/components/Shell";
 import SubscriptionDetailsFields from "@/components/SubscriptionDetailsFields";
@@ -8,11 +9,13 @@ import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { subscriptionFunds } from "@/lib/subscription-funds";
 import { money } from "@/lib/subscriptions";
+import { formatDateDisplay } from "@/lib/date-format";
 import { localDateString } from "@/lib/age";
 import { getCurrentFinancialYear, getFinancialYears, isCurrentOrPastFinancialYear } from "@/lib/financial-year";
 
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-const dateValue = (date: Date | null) => date?.toISOString().slice(0, 10) || "";
+const dateIsoValue = (date: Date | null) => date?.toISOString().slice(0, 10) || "";
+const dateValue = (date: Date | null) => date ? formatDateDisplay(dateIsoValue(date)) : "";
 
 export default async function Subscriptions({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
   if (!(await getSession())) redirect("/login");
@@ -53,8 +56,8 @@ export default async function Subscriptions({ searchParams }: { searchParams: Pr
         <div className="field"><label>Church</label><input value={church?.name || "Church profile not configured"} readOnly /></div>
         <div className="field form-grid-full"><label>Subscription funds (₹)</label><SubscriptionFundsFields /></div>
         <div className="field"><label>Receipt number</label><input value="Generated automatically when saved" readOnly /></div>
-        <div className="field"><label>Payment date</label><input type="date" value={localDateString(new Date())} readOnly /></div>
-        <div className="field"><label>Request Date</label><input name="requestDate" type="date" defaultValue={localDateString(new Date())} /></div>
+        <div className="field"><label htmlFor="subscription-paidAt">Payment date</label><DateInput id="subscription-paidAt" value={localDateString(new Date())} readOnly /></div>
+        <div className="field"><label htmlFor="subscription-requestDate">Request Date</label><DateInput id="subscription-requestDate" name="requestDate" value={localDateString(new Date())} /></div>
         <div className="field check-field"><label><input name="isVerified" type="checkbox" /> Verified</label></div>
         <div className="field"><label>Verified By</label><select name="verifiedById"><option value="">- None -</option>{userOptions.map((user) => <option key={user.value} value={user.value}>{user.label}</option>)}</select></div>
         <div className="field check-field"><label><input name="isApproved" type="checkbox" /> Approved Status</label></div>
@@ -90,8 +93,8 @@ export default async function Subscriptions({ searchParams }: { searchParams: Pr
             ...subscriptionFunds.map(([name, label]) => ({ name, label, value: String(row[name]), type: "number" as const, required: true })),
             { name: "subscriptionTotal", label: "Subscription Total (₹)", value: String(row.amountDue), type: "computed", computeFrom: subscriptionFunds.map(([name]) => name) },
             { name: "amountPaid", label: "Amount paid (₹)", value: String(row.amountPaid), type: "readonly" },
-            { name: "paidAt", label: "Payment date", value: dateValue(row.paidAt), type: "readonly" },
-            { name: "requestDate", label: "Request Date", value: dateValue(row.requestDate), type: "date" },
+            { name: "paidAt", label: "Payment date", value: dateIsoValue(row.paidAt), type: "readonly" },
+            { name: "requestDate", label: "Request Date", value: dateIsoValue(row.requestDate), type: "date" },
             { name: "isVerified", label: "Verified", value: row.isVerified },
             { name: "verifiedById", label: "Verified By", value: row.verifiedById || "", type: "select", options: userOptions },
             { name: "isApproved", label: "Approved Status", value: row.isApproved },

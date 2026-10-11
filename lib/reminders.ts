@@ -1,11 +1,21 @@
 import { prisma } from "@/lib/prisma";
 
-function dayMonth(date: Date) { return `${date.getMonth()}-${date.getDate()}`; }
+function localDateString(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
 
-export async function getUpcomingReminders(days = 7) {
+export async function getUpcomingReminders() {
   const now = new Date();
-  const end = new Date(now);
-  end.setDate(end.getDate() + days);
+  const today = new Date(now);
+  today.setHours(0, 0, 0, 0);
+  const start = new Date(today);
+  const daysUntilSunday = (7 - today.getDay()) % 7 || 7;
+  start.setDate(start.getDate() + daysUntilSunday);
+  const end = new Date(start);
+  end.setDate(end.getDate() + 6);
   const members = await prisma.member.findMany({
     where: { isActive: true },
     select: { id: true, firstName: true, lastName: true, dateOfBirth: true, weddingAnniversary: true, phone: true, email: true }
@@ -14,15 +24,18 @@ export async function getUpcomingReminders(days = 7) {
   for (const m of members) {
     for (const [type, source] of [["Birthday", m.dateOfBirth], ["Anniversary", m.weddingAnniversary]] as const) {
       if (!source) continue;
-      const next = new Date(now.getFullYear(), source.getMonth(), source.getDate());
-      next.setHours(0, 0, 0, 0);
-      const today = new Date(now); today.setHours(0, 0, 0, 0);
-      if (next < today) next.setFullYear(now.getFullYear() + 1);
-      const daysUntil = Math.round((next.getTime() - today.getTime()) / 86400000);
-      if (daysUntil >= 0 && daysUntil <= days) reminders.push({
-        id: `${m.id}-${type}`, memberId: m.id, name: `${m.firstName} ${m.lastName}`,
-        type, date: next.toISOString().slice(0, 10), daysUntil, contact: m.phone || m.email
-      });
+      for (let year = start.getFullYear(); year <= end.getFullYear(); year++) {
+        const occurrence = new Date(year, source.getMonth(), source.getDate());
+        occurrence.setHours(0, 0, 0, 0);
+        if (occurrence >= start && occurrence <= end) {
+          const daysUntil = Math.round((occurrence.getTime() - today.getTime()) / 86400000);
+          reminders.push({
+            id: `${m.id}-${type}`, memberId: m.id, name: `${m.firstName} ${m.lastName}`,
+            type, date: localDateString(occurrence), daysUntil, contact: m.phone || m.email
+          });
+          break;
+        }
+      }
     }
   }
   return reminders.sort((a, b) => a.daysUntil - b.daysUntil || a.name.localeCompare(b.name));

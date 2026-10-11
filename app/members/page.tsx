@@ -5,6 +5,7 @@ import RecordActions from "@/components/RecordActions";
 import Shell from "@/components/Shell";
 import LocationFields from "@/components/LocationFields";
 import AgeDateField from "@/components/AgeDateField";
+import DateInput from "@/components/DateInput";
 import { getSession } from "@/lib/auth";
 import { formatMemberNumber, getHighestMemberNumber } from "@/lib/member-number";
 import { calculateAge, localDateString } from "@/lib/age";
@@ -59,10 +60,10 @@ export default async function Members({ searchParams }: { searchParams: Promise<
         <div className="field"><label>Phone</label><input name="phone" type="tel" /></div>
         <div className="field"><label>Email</label><input name="email" type="email" /></div>
         <div className="field"><label>Emergency Contact</label><input name="emergencyContact" type="tel" /></div>
-        <div className="field"><label>Join Date</label><input name="joinedAt" type="date" /></div>
+        <div className="field"><label htmlFor="member-joinedAt">Join Date</label><DateInput id="member-joinedAt" name="joinedAt" /></div>
         <div className="field"><label>Membership Status</label><select name="membershipStatus">{membershipStatuses.map((value) => <option key={value}>{value}</option>)}</select></div>
         <div className="field"><label>Subscription</label><select name="subscriptionEligible" defaultValue="false"><option value="true">Eligible</option><option value="false">Not eligible</option></select></div>
-        <div className="field"><label>Expiration Date</label><input name="membershipExpiresAt" type="date" /></div>
+        <div className="field"><label htmlFor="member-expirationDate">Expiration Date</label><DateInput id="member-expirationDate" name="membershipExpiresAt" /></div>
         <div className="field"><label>Baptism Status</label><select name="baptismStatus"><option value="">- None -</option>{baptismStatuses.map((value) => <option key={value}>{value}</option>)}</select></div>
         <div className="field"><label>Family</label><select name="familyId"><option value="">- None -</option>{families.map((family) => <option value={family.id} key={family.id}>{family.name}</option>)}</select></div>
         <div className="field"><label>Ministry</label><select name="ministryId"><option value="">- None -</option>{ministries.map((ministry) => <option value={ministry.id} key={ministry.id}>{ministry.name}</option>)}</select></div>

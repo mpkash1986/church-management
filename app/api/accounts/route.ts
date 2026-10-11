@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/auth";
+import { generateReceiptNumber } from "@/lib/receipt-number";
 
 function parseDate(value: FormDataEntryValue | null) {
   if (!value) return new Date();
@@ -36,7 +37,7 @@ export async function POST(request: Request) {
         description,
         amount,
         entryDate,
-        reference: String(form.get("reference") || "").trim() || null
+        reference: generateReceiptNumber()
       }
     });
   } catch (error) {

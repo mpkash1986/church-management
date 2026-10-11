@@ -3,9 +3,11 @@
 import { useRouter } from "next/navigation";
 import { useRef, useState, type FormEvent } from "react";
 import AgeDateField from "@/components/AgeDateField";
+import DateInput from "@/components/DateInput";
 import ImageUpload from "@/components/ImageUpload";
 import LocationFields from "@/components/LocationFields";
 import { createSubscriptionName } from "@/lib/subscription-name";
+import { formatDateDisplay } from "@/lib/date-format";
 
 export type RecordField = {
   name: string;
@@ -142,6 +144,12 @@ export default function RecordActions({ entity, id, fields, ageAsOf = "", canDel
           if (field.type === "birthdate") {
             return <AgeDateField key={field.name} id={`${id}-${field.name}`} name={field.name} value={String(field.value)} asOf={ageAsOf} />;
           }
+          if (field.type === "date") {
+            return <div className="field" key={field.name}>
+              <label htmlFor={`${id}-${field.name}`}>{field.label}</label>
+              <DateInput id={`${id}-${field.name}`} name={field.name} value={String(field.value)} required={field.required} />
+            </div>;
+          }
           if (entity === "subscriptions" && field.name === "name") {
             return <div className="field" key={field.name}>
               <label htmlFor={`${id}-${field.name}`}>{field.label}</label>
@@ -162,7 +170,7 @@ export default function RecordActions({ entity, id, fields, ageAsOf = "", canDel
               })}
             </select> :
               typeof field.value === "boolean" ? <input id={`${id}-${field.name}`} name={field.name} type="checkbox" defaultChecked={field.value} /> :
-                <input id={`${id}-${field.name}`} name={field.name} type={field.type === "readonly" ? "text" : field.type || "text"} defaultValue={field.value} readOnly={field.type === "readonly"} required={field.required} min={field.type === "number" ? 0 : undefined} />}
+                <input id={`${id}-${field.name}`} name={field.name} type={field.type === "readonly" ? "text" : field.type || "text"} defaultValue={field.type === "readonly" && typeof field.value === "string" ? formatDateDisplay(field.value) : field.value} readOnly={field.type === "readonly"} required={field.required} min={field.type === "number" ? 0 : undefined} />}
           </div>;
         })}
         {message && <p className="notice" role="status">{message}</p>}

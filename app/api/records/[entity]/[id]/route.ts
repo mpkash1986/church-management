@@ -141,8 +141,7 @@ const accountSchema = z.object({
   kind: z.enum(["INCOME", "EXPENSE"]),
   category: z.string().trim().min(1),
   description: z.string().trim().min(1),
-  amount: z.coerce.number().int().positive(),
-  reference: optionalText
+  amount: z.coerce.number().int().positive()
 });
 
 const userSchema = z.object({
@@ -446,7 +445,10 @@ export async function PATCH(request: Request, context: { params: Promise<{ entit
         if (entry?.sourceSubscriptionId) return jsonError("Edit this payment from its subscription record to keep the ledger balanced.", 409);
         await prisma.accountEntry.update({
           where: { id },
-          data: { ...data, entryDate: data.entryDate ? new Date(`${data.entryDate}T12:00:00`) : new Date() }
+          data: {
+            ...data,
+            entryDate: data.entryDate ? new Date(`${data.entryDate}T12:00:00`) : new Date()
+          }
         });
         break;
       }
