@@ -5,8 +5,8 @@ A starter application for church administration using **Next.js App Router, Type
 ## Included
 - Login with hashed passwords and an HTTP-only signed session cookie
 - Roles defined for Admin, Treasurer, Secretary and Viewer (role-specific permissions need to be enforced before production)
-- Church profile: contact details, senior pastor, status, description and private logo upload; state defaults to Tamil Nadu, with Tamil Nadu districts selectable
-- Members: contact details, address line 1, area and landmark, automatically assigned read-only member numbers (M0001, M0002, ...), age calculated from date of birth, subscription eligibility, wedding anniversary, membership status, private profile photo, and family, ministry and fellowship assignments; state defaults to Tamil Nadu, with Tamil Nadu districts selectable
+- Church profile: street, area, landmark, contact details, senior pastor, status, description and private logo upload; state defaults to Tamil Nadu, with Tamil Nadu districts selectable
+- Members: street, area and landmark, automatically assigned read-only member numbers (M0001, M0002, ...), age calculated from date of birth, subscription eligibility, wedding anniversary, membership status, private profile photo, and family, ministry and fellowship assignments; state defaults to Tamil Nadu, with Tamil Nadu districts selectable
 - Families: household contact details, family head, member assignment and family member counts; state defaults to Tamil Nadu, with Tamil Nadu districts selectable
 - Fellowship groups: leaders, assistant leaders, member assignments and meeting schedules
 - Ministries: leaders, member assignments, status and description

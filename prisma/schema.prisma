@@ -39,6 +39,8 @@ model Church {
   name            String         @default("ST Andrew Church")
   logoPath        String?
   addressLine1    String?
+  area            String?
+  landmark        String?
   addressLine2    String?
   city            String?
   district        String?

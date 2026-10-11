@@ -50,7 +50,7 @@ export default async function Members({ searchParams }: { searchParams: Promise<
         <div className="field"><label>Gender</label><select name="gender"><option value="">- None -</option>{genders.map((value) => <option key={value}>{value}</option>)}</select></div>
         <div className="field"><label>Marital Status</label><select name="maritalStatus"><option value="">- None -</option>{maritalStatuses.map((value) => <option key={value}>{value}</option>)}</select></div>
         <ImageUpload name="profilePhotoPath" label="Profile Photo" />
-        <div className="field"><label>Address Line 1</label><input name="addressLine1" /></div>
+        <div className="field"><label>Street</label><input name="addressLine1" /></div>
         <div className="field"><label>Area</label><input name="area" /></div>
         <div className="field"><label>Landmark</label><input name="landmark" /></div>
         <div className="field"><label>City</label><input name="city" /></div>
@@ -96,7 +96,7 @@ export default async function Members({ searchParams }: { searchParams: Promise<
             { name: "gender", label: "Gender", value: member.gender || "", type: "select", options: genders },
             { name: "maritalStatus", label: "Marital Status", value: member.maritalStatus || "", type: "select", options: maritalStatuses },
             { name: "profilePhotoPath", label: "Profile Photo", value: member.profilePhotoPath || "", type: "image" },
-            { name: "addressLine1", label: "Address Line 1", value: member.addressLine1 || "" },
+            { name: "addressLine1", label: "Street", value: member.addressLine1 || "" },
             { name: "area", label: "Area", value: member.area || "" },
             { name: "landmark", label: "Landmark", value: member.landmark || "" },
             { name: "city", label: "City", value: member.city || "" },

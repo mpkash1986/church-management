@@ -25,7 +25,7 @@ export default async function Church({ searchParams }: { searchParams: Promise<{
       <section className="panel church-profile">
         {church.logoPath && <img className="church-logo" src={church.logoPath} alt={`${church.name} logo`} />}
         <div><h2>{church.name}</h2><p className="muted">{[
-          church.addressLine1, church.addressLine2, church.city, church.district, church.state, church.postalCode
+          church.addressLine1, church.area, church.landmark, church.city, church.district, church.state, church.postalCode
         ].filter(Boolean).join(", ") || "Add the church address and contact details."}</p>
           <p>{[church.phone, church.email].filter(Boolean).join(" · ") || "No contact information added."}</p>
           {church.websiteUrl && <a href={church.websiteUrl} target="_blank" rel="noreferrer">{church.websiteLinkText || church.websiteUrl}</a>}
@@ -37,8 +37,9 @@ export default async function Church({ searchParams }: { searchParams: Promise<{
           { name: "churchCode", label: "Church ID", value: church.churchCode || "" },
           { name: "name", label: "Name", value: church.name, required: true },
           { name: "logoPath", label: "Logo", value: church.logoPath || "", type: "image" },
-          { name: "addressLine1", label: "Address Line 1", value: church.addressLine1 || "" },
-          { name: "addressLine2", label: "Address Line 2", value: church.addressLine2 || "" },
+          { name: "addressLine1", label: "Street", value: church.addressLine1 || "" },
+          { name: "area", label: "Area", value: church.area || "" },
+          { name: "landmark", label: "Landmark", value: church.landmark || "" },
           { name: "city", label: "City", value: church.city || "" },
           { name: "district", label: "District", value: church.district || "" },
           { name: "state", label: "State", value: church.state || "" },
